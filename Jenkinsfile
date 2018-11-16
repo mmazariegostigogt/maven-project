@@ -3,12 +3,14 @@ pipeline {
 
 stages{
         stage('Build'){
-            steps {
-                sh 'export M2_HOME=/users/vm_marco/DevOps/apache-maven-3.5.0'
-                sh 'export PATH=$PATH:$M2_HOME/bin'
-                sh 'mvn --version'
-                sh 'mvn clean package'
+                def mvn_version = 'M3'
+            withEnv( ["PATH+MAVEN=${tool mvn_version}/bin"] ) {
+            sh '''for f in i7j-*; do
+                    (cd $f && mvn clean package -Dmaven.test.skip=true -Dadditionalparam=-Xdoclint:none  | tee ../jel-mvn-$f.log) &
+                  done
+                  wait'''
             }
+            
             post {
                 success {
                     echo 'Now Archiving...'
