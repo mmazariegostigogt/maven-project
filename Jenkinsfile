@@ -3,14 +3,9 @@ pipeline {
 
 stages{
         stage('Build'){
-                def mvn_version = 'M3'
-            withEnv( ["PATH+MAVEN=${tool mvn_version}/bin"] ) {
-            sh '''for f in i7j-*; do
-                    (cd $f && mvn clean package -Dmaven.test.skip=true -Dadditionalparam=-Xdoclint:none  | tee ../jel-mvn-$f.log) &
-                  done
-                  wait'''
-            }
-            }
+        steps {
+            sh 'mvn clean package'
+        }
             post {
                 success {
                     echo 'Now Archiving...'
@@ -18,5 +13,10 @@ stages{
                 }
             }
         }
+         stage('Deploy to Staging'){
+            steps{
+                buils job: 'Deploy-to-Staging'
+            }
+         }
     }
 }
