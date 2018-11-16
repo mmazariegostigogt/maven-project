@@ -10,7 +10,7 @@ stages{
                   done
                   wait'''
             }
-            
+            }
             post {
                 success {
                     echo 'Now Archiving...'
